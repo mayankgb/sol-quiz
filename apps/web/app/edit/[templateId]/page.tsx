@@ -31,6 +31,7 @@ export default function EditPage({ params }: { params: Promise<{ templateId: str
 
             if (response.data.Question.length <= 0) {
                 setIsLoading(false)
+                setTemplateTitle(response.data.title)
                 return
             }
 
