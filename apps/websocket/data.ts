@@ -1,7 +1,7 @@
 import {prisma} from "db/client"
 
 async function main() {
-  const userId = '7e7c85df-9341-44dc-932b-9dab46cf6036';
+  const userId = '04828f15-fe90-4e93-b87c-88a8407e26c5';
 
   // --------------- Template 1: JavaScript ---------------
   const jsQuestions = [

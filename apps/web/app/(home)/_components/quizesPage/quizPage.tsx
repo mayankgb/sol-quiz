@@ -166,7 +166,7 @@ export default function QuizesPage() {
       )
     }
 
-    if (quiz.PaymentStatus === "CONFIRMED" && quiz.quizStatus === "Draft" && (quiz.isTemplate === false)) {
+    if (quiz.PaymentStatus === "CONFIRMED" && quiz.quizStatus === "Draft" && (quiz.isTemplate === true)) {
       return (
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -181,10 +181,13 @@ export default function QuizesPage() {
       )
     }
 
-    if (((quiz.PaymentStatus === "CONFIRMED" || quiz.PaymentStatus === "NO_PAYMENT") && (quiz.quizStatus === "Created" ))) {
+    if (((quiz.PaymentStatus === "CONFIRMED" || quiz.PaymentStatus === "NO_PAYMENT") && (quiz.quizStatus === "Created" ) )) {
       return (
+
+        
         <div className="flex gap-2">
-          <motion.button
+
+         {!quiz.isTemplate &&   <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => router.push(`/edit/${quiz.templateId}`)}
@@ -193,7 +196,7 @@ export default function QuizesPage() {
           >
             <Edit className="w-4 h-4 inline mr-1" />
             Edit
-          </motion.button>
+          </motion.button>}
           {
             
               <motion.button

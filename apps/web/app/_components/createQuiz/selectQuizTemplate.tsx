@@ -15,10 +15,12 @@ export function SelectQuizTemplate() {
 
     const { quizTitle, id, setTemplatequizField } = useTemplateQuizStore()
     const [templateQuizData, setTemplateQuizData] = useState<TemplateQuizData[]>([])
+    const [isLoading, setIsLoading] = useState(false)
 
 
         async function fetchData() {
             try {
+                setIsLoading(true)
                 const data = await getTemplateQuiz()
                 if (data.data) { 
                     const newData: TemplateQuizData[] = data.data.map((value) => { 
@@ -27,9 +29,11 @@ export function SelectQuizTemplate() {
                         }
                     })
                     setTemplateQuizData(newData)
+                    setIsLoading(false)
                 }
             } catch (e) {
                 console.log(e)
+                setIsLoading(false)
                 return
             }
         }
@@ -56,7 +60,7 @@ export function SelectQuizTemplate() {
                     {templateQuizData.length === 0 ?
                     (
                         <div className="p-2 text-black/40">
-                            No data present
+                            {isLoading ? "loading....":"No data present"}
                         </div>
                     )
                      :

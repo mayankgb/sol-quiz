@@ -1,11 +1,13 @@
 "use client"
 import { Home, Grid, BarChart3, Users, Settings, Tag, DollarSign } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function SideBar() {
 
   const pathname = usePathname()
   const router = useRouter()
+  const session = useSession()
 
     return (
         <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
@@ -49,8 +51,8 @@ export default function SideBar() {
               <span className="text-sm font-medium">AC</span>
             </div>
             <div>
-              <p className="text-sm font-medium">Admin User</p>
-              <p className="text-xs text-gray-500">admin@company.com</p>
+              <p className="text-sm font-medium">Admin</p>
+              <p className="text-xs text-gray-500">{session.data?.user.email}</p>
             </div>
           </div>
         </div>
