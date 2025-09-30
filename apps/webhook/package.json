@@ -1,0 +1,19 @@
+{
+  "name": "webhook",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.1",
+    "@types/express": "^5.0.1",
+    "db": "*",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}

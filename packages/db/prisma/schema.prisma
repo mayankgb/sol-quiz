@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  password        String?
+  PendingPayments PendingPayments[]
+  Template        Template[]
+  Quiz            Quiz[]
+  balance         Int               @default(0)
+}
+
+model Template {
+  id               String     @id @default(uuid())
+  Question         Question[]
+  userId           String
+  isCampaign       Boolean
+  logo             String?
+  title            String
+  PromotionalLink  String?
+  tagLine          String?
+  BrandName        String?
+  totalParticipant Int?
+  Quiz             Quiz[]
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isPrivate        Boolean    @default(false)
+}
+
+model Question {
+  id                String    @id @default(uuid())
+  imageUrl          String?
+  question          String
+  correctIndex      Int
+  options           Options[]
+  correctPercentage String?
+  templateId        String
+  template          Template  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+}
+
+model Options {
+  id         String   @id @default(uuid())
+  text       String
+  index      Int
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model ParticipantRank {
+  id            String       @id @default(uuid())
+  name          String
+  points        Int
+  rank          Int
+  quizId        String
+  quiz          Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  walletAddress String?
+  signature     String?      @unique
+  creditStatus  CreditStatus @default(NO_PRIZE)
+  amount        Int          @default(0)
+}
+
+model PendingPayments {
+  id            String                @id @default(uuid())
+  quizid        String
+  quiz          Quiz                  @relation(fields: [quizid], references: [id], onDelete: Cascade)
+  walletAddress String
+  status        PendingPaymentsStatus @default(PENDING)
+  signature     String?               @unique
+  userId        String
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  amount        Int                   @default(0)
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id              String                @id @default(uuid())
+  title           String
+  userId          String
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  templateId      String
+  template        Template              @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  amount          Int                   @default(0)
+  signature       String?               @unique
+  isPrizePool     Boolean
+  isTemplate      Boolean               @default(false)
+  amountStatus    PendingPaymentsStatus @default(PENDING)
+  PendingPayments PendingPayments[]
+  CreatedAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt()
+  quizStatus      QuizStatus
+  participantRank ParticipantRank[]
+}
+
+enum PendingPaymentsStatus {
+  PENDING
+  FAILED
+  CONFIRMED
+  NO_PAYMENT
+}
+
+
+enum QuizStatus {
+  DRAFTED
+  CREATED
+  STARTED
+  ENDED
+}
+
+model LostTransaction {
+  id              String   @id @default(uuid())
+  TransferAddress String
+  ReciverAddress  String
+  Amount          Int
+  signature       String   @unique
+  date            DateTime @default(now())
+}
+
+enum CreditStatus {
+  NO_PRIZE
+  PENDING
+  CONFIRMED
+  FAILED
+}
