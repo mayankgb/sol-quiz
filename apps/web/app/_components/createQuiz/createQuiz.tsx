@@ -5,10 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { SelectQuizTemplate } from "./selectQuizTemplate";
 import { PaidQuiz } from "./paidQuiz";
 import { useCustomQuizStore, usePaidQuizStore, useTemplateQuizStore } from "@/store/createQuiz";
@@ -24,7 +21,6 @@ export function CreateQuizButton() {
     const [open, setOpen] = useState(false)
     const [currentTab, setCurrentTab] = useState<QuizType>("practice")
     const [useExistingQuiz, setUseExistingQuiz] = useState<boolean>(false)
-    const [prizeAmount, setPrizeAmount] = useState<number>(5)
     const { quizTitle, setCustomQuiz } = useCustomQuizStore() 
     const { id} = useTemplateQuizStore()
     const { paidQuizTitle, prize, description} = usePaidQuizStore()

@@ -1,5 +1,5 @@
 "use client"
-import { Home, Grid, BarChart3, Users, Settings, Tag, DollarSign } from "lucide-react";
+import { Home, Grid, DollarSign } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 

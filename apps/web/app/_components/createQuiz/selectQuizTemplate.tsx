@@ -4,7 +4,7 @@ import { getTemplateQuiz } from "@/app/actions/getquiz"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useTemplateQuizStore } from "@/store/createQuiz"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 interface TemplateQuizData {
     id: string,
@@ -13,7 +13,7 @@ interface TemplateQuizData {
 
 export function SelectQuizTemplate() {
 
-    const { quizTitle, id, setTemplatequizField } = useTemplateQuizStore()
+    const { setTemplatequizField } = useTemplateQuizStore()
     const [templateQuizData, setTemplateQuizData] = useState<TemplateQuizData[]>([])
     const [isLoading, setIsLoading] = useState(false)
 

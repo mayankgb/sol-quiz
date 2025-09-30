@@ -10,7 +10,12 @@ console.log(process.env.SOLANA_PRIVATE_KEY)
 
 const connection = new Connection("https://api.devnet.solana.com")
 async function main() {
-    const redis = new Redis();
+    const redis = new Redis({
+        host: process.env.BROKERS, 
+        password: process.env.PASSWORD, 
+        port: 19373, 
+        db: 0
+    });
     const streamName = "quizchain";
     const groupName = "quiz1";
     const consumerName = "consumer1";

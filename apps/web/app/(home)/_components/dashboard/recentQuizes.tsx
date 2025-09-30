@@ -3,7 +3,7 @@
 import { CreateQuizButton } from "@/app/_components/createQuiz/createQuiz"
 import { getQuiz } from "@/app/actions/getquiz"
 import { useRecentQuizStore , RecentQuiz} from "@/store/quizstore"
-import { Grid, List, Users, Clock, Edit3, Trash2, MoreHorizontal, PlusCircle } from "lucide-react"
+import { Grid, List, Users, Clock, PlusCircle } from "lucide-react"
 import { motion } from "motion/react"
 import { useEffect, useState } from "react"
 

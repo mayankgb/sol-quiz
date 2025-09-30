@@ -26,7 +26,12 @@ export class RoomManager {
         this.PaidRoom = new Map()
         this.RegularRoom = new Map()
         this.roomkey = new Map()
-        this.redis = new Redis()
+        this.redis = new Redis({
+        host: process.env.BROKERS, 
+        password: process.env.PASSWORD, 
+        port: 19373, 
+        db: 0
+    });
 
     }
 

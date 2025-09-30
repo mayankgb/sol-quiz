@@ -4,7 +4,6 @@ import { useSearchParamStore, useTemplateTitleStore } from "@/store/store"
 import { ArrowLeft, LayoutDashboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { useTemplateQuizStore } from "@/store/createQuiz"
 import { updateQuizStatus } from "@/app/actions/createQuiz"
 import { toast } from "sonner"
 
