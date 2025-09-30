@@ -3,7 +3,6 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "../lib/auth"
 import { prisma } from "db/client"
-import { $Enums } from "../../../../packages/db/src/generated/prisma"
 
 export async function getWinners( quizId: string ) { 
 
