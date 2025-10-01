@@ -166,7 +166,7 @@ export default function QuizesPage() {
       )
     }
 
-    if (quiz.PaymentStatus === "CONFIRMED" && quiz.quizStatus === "Draft" && (quiz.isTemplate === true)) {
+    if (quiz.PaymentStatus === "CONFIRMED" && quiz.quizStatus === "Draft" && (quiz.isTemplate === false)) {
       return (
         <motion.button
           whileHover={{ scale: 1.02 }}
