@@ -4,10 +4,11 @@
 // import Leaderboard from "../components/liveQuiz/leaderBoard";
 // import { QuestionPage } from "../components/liveQuiz/questionPage";
 
-// export default function Jooning(){ 
-//     return (
-//         <div className="min-h-screen w-screen">
-//             {/* <EndPage/> */}
-//         </div>
-//     )
-// }
+export default function Jooning(){ 
+    return (
+        <div className="min-h-screen w-screen">
+            hello world
+            {/* <EndPage/> */}
+        </div>
+    )
+}
