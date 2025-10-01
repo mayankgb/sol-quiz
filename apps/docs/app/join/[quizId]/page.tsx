@@ -49,7 +49,7 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
                 router.push("/")
                 return
             }
-            const socket = new WebSocket("ws://localhost:8000")
+            const socket = new WebSocket("wss://quizbackend.alignstacks.com")
             setWs(socket)
             const userData = JSON.parse(localStorage.getItem("user")!) as  {participantId: any;roomId: any;roomKey: any; userName: string;}
 

@@ -47,7 +47,7 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
                 toast.error("loading")
                 return 
             }
-            const socket = new WebSocket("wss://localhost:8000")
+            const socket = new WebSocket("wss://quizbackend.alignstacks.com")
             setWs(socket)
             socket.onopen = () => { 
                 console.log("connected")

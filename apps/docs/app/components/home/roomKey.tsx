@@ -76,7 +76,7 @@ export function RoomKey(){
             setIsLoading(true)
             setisError(false)
             
-            const response = await fetch("http://localhost:8000/user/getquiz", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/getquiz`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ export function RoomKey(){
     async function createUser() { 
         try{ 
             setIsLoading(true)
-            const response = await axios.post("http://localhost:8000/user/create", {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/create`, {
                 roomId: roomId, 
                 roomKey: parseInt(roomKey), 
                 name: name,

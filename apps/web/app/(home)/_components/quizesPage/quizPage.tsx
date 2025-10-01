@@ -77,7 +77,7 @@ export default function QuizesPage() {
     setIsDisabled(true)
     try { 
 
-      const response = await axios.put(`${process.env.BACKEND_URL}/admin/start`,{ 
+      const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/admin/start`,{ 
        quizId: quizId
       }, { 
         headers: {
