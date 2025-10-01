@@ -154,13 +154,12 @@ export function QuestionCreationPannel() {
         const toastId = toast.loading("deleting...")
         const question = questions[index]
         if ((questions[index]?.isCreated)) {
-            setField(index, "correctIndex", 0)
             let correctIndex: number | undefined = undefined
             if (questions[index]?.correctIndex === optionIndex) {
-                if (optionArrayIndex + 1 >= questions[index].options.length) {
-                    correctIndex = questions[index].options[0]!.index
+                if (optionArrayIndex === 0) {
+                    correctIndex = questions[index].options[1]!.index
                 } else {
-                    correctIndex = questions[index].options[optionArrayIndex + 1]!.index
+                    correctIndex = questions[index].options[0]!.index
                 }
             }
             const response = await deleteOption(input, questions[index].questionId, optionId, questions[index].correctIndex === optionIndex, correctIndex)
