@@ -238,7 +238,7 @@ export class Room {
                 state: this.currentState,
                 leaderBoard: currentLeaderBoard,
                 userPoints: value.points,
-                userPosition: index > 4 && index,
+                userPosition: index,
                 correctAns: this.submissionCorrectness.get(value.participantId) ? "You are correct" : this.correctAnswer
 
             }))

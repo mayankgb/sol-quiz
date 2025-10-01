@@ -5,7 +5,6 @@ import Leaderboard from "@/app/components/liveQuiz/leaderBoard"
 import { QuestionPage } from "@/app/components/liveQuiz/questionPage"
 import { WaitingPage } from "@/app/components/liveQuiz/waiting"
 import { EndState, useCurrentQuestionStore, useCurrentQuizStateStore, useEndStateStore, useLeaderBoardStore, useTotalPlayers, useUserSocket } from "@/store/quizstore"
-import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { use, useEffect } from "react"
 import { toast } from "sonner"
@@ -36,7 +35,7 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
     const {currentState, setCurrentState } = useCurrentQuizStateStore()
     const { setTotalPlayers } = useTotalPlayers()
     const { setCurrentQuestion } = useCurrentQuestionStore()
-    const { setLeaderBoard } = useLeaderBoardStore()
+    const { setLeaderBoard, setField } = useLeaderBoardStore()
     const { setEndState } = useEndStateStore()
     const {setWs} = useUserSocket()
     const router = useRouter()
@@ -101,6 +100,12 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
                         }
                     })
                     setLeaderBoard(leaderBoard)
+                    if (message.userPoints !== undefined) {
+                        setField("userPoints", message.userPoints)
+                    }
+                    if (message.userPosition) {
+                        setField("userPosition", message.userPosition)
+                    }
                 } else if (message.state === "ENDED") {
                     setCurrentState("ENDED")
                     const endState: EndState = {
@@ -109,8 +114,11 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
                         correctQuestions: message.CorrectQuestions
                     }
                     setEndState(endState)
-                } else {
-                    toast.error("invalid message type")
+                } else if(message.type === "error"){
+                    toast.error(message.message)
+                    return
+                }else { 
+                    toast.error(JSON.stringify(message))
                     return
                 }
 

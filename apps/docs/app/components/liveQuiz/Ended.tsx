@@ -1,10 +1,10 @@
 "use client"
 
 import { useEndStateStore } from "@/store/quizstore"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle2, Trophy } from "lucide-react"
+import { CheckCircle2, Trophy , Crown} from "lucide-react"
 import { useRouter } from "next/navigation"
 
 export function EndPage() {
@@ -49,6 +49,22 @@ export function EndPage() {
           >
             Quiz Completed
           </motion.h1>
+
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="bg-[#FBF8FF] rounded-lg p-4 mb-4"
+          >
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Crown className="w-4 h-4 text-yellow-400" />
+              <p className="text-xs text-gray-600 font-medium uppercase tracking-wide">
+                Winner
+              </p>
+            </div>
+            <p className="text-base font-bold text-black mb-1">{endstate.userName}</p>
+          </motion.div>
 
           {/* Stats */}
           <motion.div

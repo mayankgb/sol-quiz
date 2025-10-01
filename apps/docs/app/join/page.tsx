@@ -1,11 +1,13 @@
-"use client"
+// "use client"
 
-import { QuestionPage } from "../components/liveQuiz/questionPage";
+// import { EndPage } from "../components/liveQuiz/Ended";
+// import Leaderboard from "../components/liveQuiz/leaderBoard";
+// import { QuestionPage } from "../components/liveQuiz/questionPage";
 
-export default function Jooning(){ 
-    return (
-        <div className="h-screen w-screen">
-            <QuestionPage/>
-        </div>
-    )
-}
+// export default function Jooning(){ 
+//     return (
+//         <div className="min-h-screen w-screen">
+//             {/* <EndPage/> */}
+//         </div>
+//     )
+// }

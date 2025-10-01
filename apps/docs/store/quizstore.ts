@@ -32,14 +32,23 @@ export interface LeaderBoard {
 
 interface LeaderBoardStore { 
     leaderBoard: LeaderBoard[]
+    userPoints?: number,
+    userPosition?: number
+    setField: <K extends keyof LeaderBoardStore>(key : K, value: LeaderBoardStore[K]) => void
     setLeaderBoard: (data: LeaderBoard[]) => void
 }
 
 export const useLeaderBoardStore = create<LeaderBoardStore>((set) => ({ 
-    leaderBoard: [], 
+    leaderBoard: [],
     setLeaderBoard: (value) => set((state) => ({
         leaderBoard: value
-    }))
+    })), 
+    setField: (key , value) => set((state) => { 
+        return { 
+            ...state, 
+            [key]: value
+        }
+    })
 }))
 
 interface CurrentQuestion { 
