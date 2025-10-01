@@ -18,7 +18,7 @@ adminRouter.put("/start", async (req, res) => {
             })
             return
         }
-        const decode = jwt.verify(token,"asas") as { id: string }
+        const decode = jwt.verify(token,process.env.JWT_SECRET!) as { id: string }
         const { quizId } = req.body  
         const existingQuiz = await prisma.quiz.findFirst({
             where: {

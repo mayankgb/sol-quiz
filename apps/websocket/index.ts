@@ -74,7 +74,7 @@ wss.on("connection", function(ws: CustomWebsocket) {
                 case "adminJoin":
                     console.log("admin join")
                     const token = message.jwtToken
-                    const decode = jwt.verify(token, "asas") as {id : string}
+                    const decode = jwt.verify(token, process.env.JWT_SECRET!) as {id : string}
                     RoomManager.getInstance().adminJoin(decode.id, ws)
                     break;
 
