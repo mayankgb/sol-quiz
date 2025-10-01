@@ -86,11 +86,18 @@ export const useQuestionStore = create<QuestionStore>((set) => ({
   addOption: (questionIndex) =>
     set((state) => {
       const updated = [...state.questions];
+      let newIndex = 0
+      updated[questionIndex]?.options.map((value) => { 
+        if (value.index > newIndex) {
+          newIndex = value.index 
+        }
+      })
+      newIndex++
       updated[questionIndex] = {
         ...updated[questionIndex],
         options: [...updated[questionIndex]!.options, { 
           id: uuid(), 
-          index: (updated[questionIndex]!.options[updated[questionIndex]!.options.length -1]!.index + 1),
+          index: newIndex,
           option: ""
         }],
       } as Question;

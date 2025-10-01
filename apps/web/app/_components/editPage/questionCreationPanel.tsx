@@ -47,7 +47,7 @@ export function QuestionCreationPannel() {
     }
 
     async function handleIndexChange(e: string) {
-        console.log(e)
+        console.log("this is the index change through client",e)
         console.log("updated Index", questions[index])
         setField(index, "correctIndex", parseInt(e))
         if (questions[index]?.isCreated) {
@@ -164,9 +164,8 @@ export function QuestionCreationPannel() {
             }
             const response = await deleteOption(input, questions[index].questionId, optionId, questions[index].correctIndex === optionIndex, correctIndex)
             toast.dismiss(toastId)
-            setField(index, "correctIndex", correctIndex ? correctIndex : questions[index]!.correctIndex)
+            setField(index, "correctIndex", (correctIndex !== undefined) ? correctIndex : questions[index]!.correctIndex)
             // setField(index, "isEditted", true)
-            console.log(correctIndex)
             console.log("this is the corrrect index", questions[index].correctIndex)
             removeOption(index, optionArrayIndex)
             toast.message(response.message)

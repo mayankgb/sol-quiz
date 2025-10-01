@@ -12,8 +12,8 @@ export function SidePannel() {
     const { questions, addQuestion } = useQuestionStore()
     const { index, setIndex} = currentQuestionIndexStore()
 
-    console.log("question length", questions.length)
-    console.log("current index", index)
+    // console.log("question length", questions.length)
+    // console.log("current index", index)
 
     function test(value:number) { 
         console.log("function index", value)
