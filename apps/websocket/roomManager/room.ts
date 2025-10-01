@@ -446,7 +446,7 @@ export class Room {
         }else if (ws.adminId) {
             this.adminWs = null
             if (this.currentState === "WAITING") {
-                setInterval(() => {
+                setTimeout(() => {
                     if (this.adminWs) {
                         return
                     }
