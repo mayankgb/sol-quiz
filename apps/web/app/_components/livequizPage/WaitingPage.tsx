@@ -59,7 +59,7 @@ export function WaitingPage() {
             >
                 <p className="text-sm text-gray-500 mb-2">Join at</p>
                 <h1 className="text-2xl font-semibold text-black mb-4">
-                    menti.com
+                    quiz.alignstacks.com
                 </h1>
                 
                 <div className="inline-block px-6 py-3 rounded-lg bg-gray-50 border border-gray-200">
