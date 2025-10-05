@@ -24,19 +24,43 @@ adminRouter.put("/start", async (req, res) => {
             where: {
                 id: quizId, 
                 userId: decode.id,
-                quizStatus: "CREATED"
+                quizStatus: "CREATED",
             },
             select: {
                 isPrizePool: true, 
                 amountStatus: true,
+                templateId: true
             }
         })
         if (!existingQuiz) {
             res.json({
-                message: "invalid request quiz not found"
+                message: "invalid request quiz not found", 
+                status: 400
             })
             return
         }
+
+        const questionLength = await prisma.template.findFirst({
+            where: { 
+                id: existingQuiz.templateId
+            },
+            select: { 
+                _count: { 
+                    select: { 
+                        Question: true
+                    }
+                }
+            }
+        })
+
+        if (questionLength!._count.Question <= 0) {
+            res.json({ 
+                message: "add atleast one question to start with the quiz",
+                status: 400
+            })
+            return
+        }
+
         if (existingQuiz.isPrizePool) {
             if (existingQuiz.amountStatus === "PENDING" || existingQuiz.amountStatus === "FAILED") {
                 res.json({
@@ -50,14 +74,16 @@ adminRouter.put("/start", async (req, res) => {
            if (response.status > 200) {
             res.status(response.status).json({
                 message: response.message,
-                roomKey: response.roomKey
+                roomKey: response.roomKey,
+                status: response.status
             })
             return
            }
            console.log(response)
             res.status(response.status).json({
                 message: response.message,
-                roomKey: response.roomKey
+                roomKey: response.roomKey,
+                status: 200
             })
             
             return

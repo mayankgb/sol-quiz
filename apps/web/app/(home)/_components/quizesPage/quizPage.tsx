@@ -85,7 +85,17 @@ export default function QuizesPage() {
         }
       })
 
+      // console.log()
+
       const data = response.data
+
+      if (data.status >  200) {
+        toast.error(data.message)
+        toast.dismiss(toastId)
+        setIsDisabled(false)
+        return
+      }
+
       localStorage.setItem("roomInfo", JSON.stringify({
         roomKey: data.roomKey, 
         quizId: quizId

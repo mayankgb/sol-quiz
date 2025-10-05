@@ -15,6 +15,7 @@
       "dependencies": {
         "@radix-ui/react-slot": "^1.2.3",
         "@repo/ui": "*",
+        "@solana/web3.js": "^1.98.4",
         "@tailwindcss/postcss": "^4.1.13",
         "axios": "^1.12.2",
         "class-variance-authority": "^0.7.1",
@@ -127,7 +128,7 @@
     "apps/websocket": {
       "name": "websocket",
       "dependencies": {
-        "@solana/web3.js": "^1.98.0",
+        "@solana/web3.js": "^1.98.4",
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.1",
         "@types/jsonwebtoken": "^9.0.9",

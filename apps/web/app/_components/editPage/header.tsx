@@ -79,10 +79,10 @@ export function Header() {
                                 // Add your save and finish logic here
                                 updateStatus()
                             }}
-                            className="text-black cursor-pointer border-0 hover:opacity-90"
-                            style={{ backgroundColor: '#FAF7FF' }}
+                            className="text-white cursor-pointer w-24 rounded-4xl border-0 hover:opacity-90"
+                            style={{ backgroundColor: "black" }}
                         >
-                            Save & Finish
+                            Finish
                         </Button>
                     </div>
                 </div>

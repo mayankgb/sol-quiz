@@ -193,7 +193,7 @@ export default function EditPage({ params }: { params: Promise<{ templateId: str
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="bg-[#FBF8FF] flex flex-col h-screen"
+                        className="bg-[#FBF8FF] flex flex-col h-fit"
                     >
                         <EditPageComponent />
                     </motion.div>

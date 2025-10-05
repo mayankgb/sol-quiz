@@ -25,20 +25,27 @@ export function SidePannel() {
     return ( 
         <div className="bg-[#FBF8FF] h-[90%]">
             <motion.div 
-                className="w-60 h-[100%] items-center gap-y-3 px-4 flex flex-col"
+                className="w-60 max-h-[100%] items-center gap-y-3 px-4 flex flex-col"
                 initial={{ x: -50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
             >
                 <Button 
-                    onClick={addQuestion} 
+                    onClick={() => {
+                        console.log("calling")
+                        console.log(questions)
+                        if (index === -1) {
+                            setIndex(0)
+                        }
+                        addQuestion()
+                    }} 
                     className="rounded-full bg-black text-white text-center hover:bg-black/90"
                 >
                     + New slide
                 </Button>
                 <div className="py-3 w-full max-h-[80%] space-y-3 example overflow-y-auto">
                     <AnimatePresence>
-                        {Array.from({ length: questions.length }).map((_, i) => (
+                        {index !== -1 && Array.from({ length: questions.length }).map((_, i) => (
                             <motion.div 
                                 key={i}
                                 initial={{ opacity: 0, y: 20 }}

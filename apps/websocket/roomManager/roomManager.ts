@@ -58,8 +58,11 @@ export class RoomManager {
                 this.campaignsRoom.get(existingRoomId)?.adminJoin(adminWs)
             }
         } else {
+            console.log("admin access forbidden, roomAdmin", this.roomAdmin)
+            console.log("admin access forbidden admin id",adminId)
             adminWs.send(JSON.stringify({
-                message: "unauthorised access"
+                message: "unauthorised access",
+                type:"forbidden"
             }))
         }
 

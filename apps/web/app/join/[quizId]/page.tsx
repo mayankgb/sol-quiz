@@ -8,7 +8,7 @@ import { EndState, useCurrentQuestionStore, useCurrentQuizStateStore, useEndStat
 import { useSession } from "next-auth/react"
 import { use, useEffect } from "react"
 import { toast } from "sonner"
-
+import { useRouter } from "next/navigation"
 interface CurrentQuestion { 
     question: string, 
     options: Options[], 
@@ -38,6 +38,7 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
     const { setLeaderBoard } = useLeaderBoardStore()
     const { setEndState } = useEndStateStore()
     const { setWs} = useUserSocket()
+    const router = useRouter()
 
 
     useEffect(() => { 
@@ -105,7 +106,13 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
                     // toast.error(" message tyinvalidpe")
                     toast.error(message.message)
                     return
-                }else { 
+                }else if (message.type === "forbidden"){
+                    toast.error(message.message)
+                    localStorage.removeItem("roomInfo")
+                    router.push("/quizes")
+                    return
+                 }
+                else { 
                     toast.error(JSON.stringify(message))
                     return
                 }

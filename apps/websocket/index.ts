@@ -1,7 +1,6 @@
 import { WebSocketServer } from "ws";
 import express from "express"
 import cors from "cors"
-import { prisma } from "db/client"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import { RoomManager } from "./roomManager/roomManager";
@@ -64,7 +63,8 @@ wss.on("connection", function(ws: CustomWebsocket) {
                     console.log("next roomId", ws.roomId)
                     if (!ws.adminId || !ws.roomId) {
                        ws.send(JSON.stringify({
-                        message:"unauthorised access"
+                        message:"unauthorised access", 
+                        type: "forbidden"
                        }))
                        return
                     }
@@ -75,6 +75,8 @@ wss.on("connection", function(ws: CustomWebsocket) {
                     console.log("admin join")
                     const token = message.jwtToken
                     const decode = jwt.verify(token, process.env.JWT_SECRET!) as {id : string}
+                    console.log(message)
+                    console.log(decode)
                     RoomManager.getInstance().adminJoin(decode.id, ws)
                     break;
 

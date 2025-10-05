@@ -1,6 +1,7 @@
-import { response, Router } from "express";
+import { Router } from "express";
 import { RoomManager } from "../roomManager/roomManager";
 import { createParticipantSchema } from "../types/types";
+import { PublicKey } from "@solana/web3.js";
 
 export const userRouter = Router()
 
@@ -41,6 +42,19 @@ userRouter.post("/create", async (req, res) => {
         return
     }
 
+    if (parsedInputs.data.walletAddress) {
+        const response = isPublicKeyValid(parsedInputs.data.walletAddress)
+
+        if (response.status > 200) {
+            res.json({ 
+                message: response.message, 
+                status: response.status
+            })
+            return
+        }
+    }
+    
+
     const response = RoomManager.getInstance().createUser(parsedInputs.data.name, parsedInputs.data.roomKey, parsedInputs.data.roomId, parsedInputs.data.walletAddress)
 
     if (response.status > 200) {
@@ -58,3 +72,24 @@ userRouter.post("/create", async (req, res) => {
     })
     return
 })
+
+
+function isPublicKeyValid(publicKey: string) { 
+    try{ 
+
+        const response = new PublicKey(publicKey)
+
+        return { 
+            message: "valid key",
+            status: 200, 
+            publicKey
+        }
+
+    }catch(e){ 
+        console.log(e)
+        return { 
+            status: 400, 
+            message: "invalid public key"
+        }
+    }
+}

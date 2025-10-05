@@ -97,7 +97,7 @@ export function EndPage() {
           >
             <Button
               onClick={() => router.push("/dashboard")}
-              className="w-full border border-gray-200 bg-[#FBF8FF] text-black hover:opacity-80"
+              className="w-full border cursor-pointer border-gray-200 bg-[#FBF8FF] text-black hover:opacity-80"
             >
               Go to Dashboard
             </Button>

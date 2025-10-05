@@ -28,9 +28,19 @@ export function QuestionCreationPannel() {
     async function dQuestion() {
         const questionId = questions[index]!.questionId
         const toastId = toast.loading("deleting...")
-        const response = await deleteQuestion(input, questionId)
+        if (index === 0 && questions.length === 1) {
+            setIndex(-1)
+            toast.dismiss(toastId)
+        } 
+        if (index +1 === questions.length) {
+            setIndex(index -1 )
+            toast.dismiss(toastId)
+        }
+        if (questions[index]?.isCreated) {
+            const response = await deleteQuestion(input, questionId)
+            toast.success(response.message)
+        }
         toast.dismiss(toastId)
-        toast.success(response.message)
         removeQuestion(questionId)
     }
 
@@ -47,7 +57,7 @@ export function QuestionCreationPannel() {
     }
 
     async function handleIndexChange(e: string) {
-        console.log("this is the index change through client",e)
+        console.log("this is the index change through client", e)
         console.log("updated Index", questions[index])
         setField(index, "correctIndex", parseInt(e))
         if (questions[index]?.isCreated) {
@@ -178,7 +188,8 @@ export function QuestionCreationPannel() {
 
     }
     return (
-        <motion.div
+        <>
+        {index === -1 ?<div className="bg-white border border-slate-300 w-72 h-[90%] gap-y-4 rounded-3xl flex flex-col pt-4 px-4"></div> :<motion.div
             className="bg-white border border-slate-300 w-72 h-[90%] gap-y-4 rounded-3xl flex flex-col pt-4 px-4"
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -276,6 +287,7 @@ export function QuestionCreationPannel() {
                     Delete question
                 </Button>
             </div>
-        </motion.div>
+        </motion.div>}
+        </>
     )
 }

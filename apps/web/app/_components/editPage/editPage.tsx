@@ -7,7 +7,7 @@ export function EditPageComponent() {
     return (
         <div>
             <Header />
-            <div className="flex h-full  pt-7 justify-between px-10">
+            <div className="flex h-screen  pt-7 justify-between px-10">
                 <SidePannel />
                 <Preview />
                 <QuestionCreationPannel />

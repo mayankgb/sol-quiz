@@ -12,7 +12,7 @@ export default function SideBar() {
     return (
         <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
         <div className="p-6">
-          <h1 className="text-xl font-bold">QuizCampaign</h1>
+          <h1 className="text-xl font-bold">QuizChain</h1>
         </div>
         <nav className="flex-1 pt-2">
           <div className="px-3 py-2">
