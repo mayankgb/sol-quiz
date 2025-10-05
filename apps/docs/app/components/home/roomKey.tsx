@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card"
 import { Loader2, LogIn, User, Wallet as WalletIcon } from "lucide-react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
+import {PublicKey} from "@solana/web3.js"
 
 //   name: z.string(),
 //     roomKey: z.number(),
@@ -116,8 +117,16 @@ export function RoomKey(){
     }
 
     async function createUser() { 
-        try{ 
+        try{             
             setIsLoading(true)
+            if (walletAddress.length > 0) {
+                const response = isValidPublicKey(walletAddress)
+                if (response.status > 200) {
+                    toast.error(response.message)
+                    setIsLoading(false)
+                    return
+                }                
+            }
             const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/create`, {
                 roomId: roomId, 
                 roomKey: parseInt(roomKey), 
@@ -161,6 +170,22 @@ export function RoomKey(){
                 return
             }
             getQuiz()
+        }
+    }
+
+    function isValidPublicKey(publicKey: string) { 
+        try{ 
+            const newPublicKey = new PublicKey(publicKey)
+            return { 
+                message: "success", 
+                status: 200
+            }
+        }catch(e){ 
+            console.log(e)
+            return { 
+                status: 400, 
+                message: "please provide valid solana public key"
+            }
         }
     }
 
@@ -354,7 +379,7 @@ export function RoomKey(){
                             <Button 
                                 onClick={state ?createUser: getQuiz}
                                 disabled={isLoading || !roomKey}
-                                className="w-full h-12 text-sm font-semibold text-black border-0 hover:opacity-90 disabled:opacity-50 mt-6"
+                                className="w-full cursor-pointer h-12 text-sm font-semibold text-black border-0 hover:opacity-90 disabled:opacity-50 mt-6"
                                 style={{ backgroundColor: '#FBF8FF' }}
                             >
                                 {isLoading ? (
