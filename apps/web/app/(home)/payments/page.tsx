@@ -88,7 +88,7 @@ export default function Payments() {
     }
 
     return (
-        <div className="min-h-screen w-[80%] bg-white p-8">
+        <div className="min-h-screen bg-white p-8">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-12">
                     <div className="flex items-center gap-3 mb-3">

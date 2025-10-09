@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Filter, Search, Calendar, Trophy, CreditCard, Edit, Play, Eye } from "lucide-react"
+import { Filter, Trophy, CreditCard, Edit, Play } from "lucide-react"
 import { getAllQuiz } from "@/app/actions/getquiz"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
@@ -42,7 +42,6 @@ export default function QuizesPage() {
     // Simulate API call
     async function main() {
       setIsLoading(true)
-      setIsLoading(false)
       const response = await getAllQuiz()
       console.log(response.data)
       if (response.status === 200 && response.data) {
@@ -66,6 +65,8 @@ export default function QuizesPage() {
 
         setAllQuiz(data)
         setIsLoading(false)
+      }else { 
+        setIsLoading(false)
       }
     }
     main()
@@ -84,11 +85,7 @@ export default function QuizesPage() {
           Authorization: session.data?.user.jwtToken
         }
       })
-
-      // console.log()
-
       const data = response.data
-
       if (data.status >  200) {
         toast.error(data.message)
         toast.dismiss(toastId)

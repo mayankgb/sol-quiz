@@ -10,7 +10,7 @@ export default function SideBar() {
   const session = useSession()
 
     return (
-        <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+        <div className="w-64 bg-white overflow-hidden h-screen border-r border-gray-200 flex flex-col">
         <div className="p-6">
           <h1 className="text-xl font-bold">QuizChain</h1>
         </div>
