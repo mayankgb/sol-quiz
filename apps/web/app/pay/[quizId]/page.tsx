@@ -333,8 +333,9 @@ export default function Pay({ params}: {
                                 <motion.div
                                     animate={{ rotate: 360 }}
                                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                    className="mb-4"
                                 >
-                                    <Loader2 className="w-16 h-16 text-gray-600 mb-4" />
+                                    <Loader2 className="w-16 h-16 text-gray-600 " />
                                 </motion.div>
                                 <h3 className="text-xl font-semibold text-black mb-2">Sending Transaction</h3>
                                 <p className="text-gray-600 text-center text-sm">
@@ -354,8 +355,9 @@ export default function Pay({ params}: {
                                 <motion.div
                                     animate={{ rotate: 360 }}
                                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                    className="mb-4"
                                 >
-                                    <Loader2 className="w-16 h-16 text-gray-600 mb-4" />
+                                    <Loader2 className="w-16 h-16 text-gray-600" />
                                 </motion.div>
                                 <h3 className="text-xl font-semibold text-black mb-2">Confirming Payment</h3>
                                 <p className="text-gray-600 text-center text-sm">
