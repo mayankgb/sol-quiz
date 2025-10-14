@@ -24,7 +24,7 @@ interface Options {
 export function QuestionPage() {
     const { currentQuestion } = useCurrentQuestionStore()
     const [timeLeft, setTimeLeft] = useState(10)
-    const [timeRemaining, setTimeRemaining] = useState(Math.floor((new Date().getTime() + (10 * 1000) - (new Date().getTime())) / 1000))
+    const [timeRemaining, setTimeRemaining] = useState(Math.floor((currentQuestion.startTime + (10 * 1000) - (new Date().getTime())) / 1000))
     const { ws } = useUserSocket()
     const router = useRouter()
     const [isSubmitted, setisSubmitted] = useState(false)
@@ -41,23 +41,6 @@ export function QuestionPage() {
             })
         }, 1000)
     }, [])
-
-    // const dummyQuestion: CurrentQuestion = { 
-    //     question: "ad", 
-    //     options: [{ 
-    //         index: 3, 
-    //         option: "d"
-    //     }, 
-    //     { 
-    //         option: "2",
-    //         index: 2 
-    //     }
-    // ], 
-    // questionId: "as", 
-    // totalPoints:122, 
-    // startTime: new Date().getTime()
-    // }
-
     async function handleSubmit(questionId: string, optionIndex: number) {
         try {
             if (!ws) {

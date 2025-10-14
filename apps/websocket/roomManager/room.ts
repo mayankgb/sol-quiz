@@ -231,7 +231,8 @@ export class Room {
         console.log("--------leaderboard--------")
 
         const currentLeaderBoard = this.calculateResult()
-        this.submissionCorrectness.clear()
+        
+        console.log("-----leaderboard correctness-------- \n", this.submissionCorrectness)
 
         this.user.map((value, index) => {
             this.userWs.get(value.participantId)?.send(JSON.stringify({
@@ -239,10 +240,12 @@ export class Room {
                 leaderBoard: currentLeaderBoard,
                 userPoints: value.points,
                 userPosition: index,
-                correctAns: this.submissionCorrectness.get(value.participantId) ? "You are correct" : this.correctAnswer
-
+                isCorrect: this.submissionCorrectness.get(value.participantId),
+                correctAns: this.submissionCorrectness.get(value.participantId) ? "You are correct" : ` Correct answer is ${this.correctAnswer}`
             }))
         })
+
+        this.submissionCorrectness.clear()
 
         this.adminWs?.send(JSON.stringify({ 
             state: this.currentState,

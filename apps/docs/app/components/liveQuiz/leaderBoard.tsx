@@ -2,24 +2,47 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useLeaderBoardStore, LeaderBoard } from '@/store/quizstore';
+import { useLeaderBoardStore } from '@/store/quizstore';
 
 export default function Leaderboard() {
-  const [leaderboardData, setLeaderboardData] = useState<LeaderBoard[]>([]);
+  const [showAnswer, setShowAnswer] = useState(true)
 
-  const { leaderBoard, userPoints, userPosition } = useLeaderBoardStore()
+  const { leaderBoard, userPoints, userPosition , isCorrect, correctAns} = useLeaderBoardStore()
 
   useEffect(() => {
-    const sortedData = [...leaderboardData].sort((a, b) => b.points - a.points);
-    setLeaderboardData(sortedData);
+     const timer = setTimeout(() => {
+      setShowAnswer(false);
+    }, 2000);
+    console.log("this is the leaderboard userpoints", userPoints)
+    console.log('this is the userPosition', userPosition)
+    return () => clearTimeout(timer);
   }, []);
 
 
-  const maxScore = leaderboardData.length > 0 ? leaderboardData[0]!.points : 100;
+  const maxScore = leaderBoard.length > 0 ? leaderBoard[0]!.points : 100;
 
   return (
     <div className="rounded-lg h-screen flex items-center justify-center mx-auto">
       <div className='w-[90%] mx-auto max-w-2xl'>
+        <AnimatePresence>
+          {showAnswer && correctAns !== undefined &&(
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="mb-6 py-4 px-6 bg-white border border-gray-200 rounded-lg shadow-sm text-center"
+            >
+              {(isCorrect !== undefined && isCorrect) ? (
+                <p className="text-lg font-bold text-emerald-600">{correctAns}</p>
+              ) : (
+                <p className="text-lg font-medium text-gray-900">
+                   <span className="font-bold text-gray-900">{correctAns}</span>
+                </p>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-900">Quiz Leaderboard</h2>
 
         <div className="space-y-4">
@@ -88,7 +111,7 @@ export default function Leaderboard() {
         </p>
 
 
-       { (userPoints && userPosition ) && <motion.div
+       { (userPoints !== undefined && userPosition!== undefined ) && <motion.div
           className="mt-8 py-4 px-6 bg-white border border-gray-200 rounded-lg shadow-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -105,7 +128,7 @@ export default function Leaderboard() {
             <div className="flex items-center gap-6">
               <div className="text-right">
                 <p className="text-xs text-gray-400">Position</p>
-                <p className="text-lg font-bold text-gray-900">#{userPosition}</p>
+                <p className="text-lg font-bold text-gray-900">#{userPosition + 1}</p>
               </div>
 
               <div className="h-8 w-px bg-gray-200"></div>

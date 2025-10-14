@@ -96,15 +96,24 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
                         return {
                             points: value.points,
                             participantId: value.participantId,
-                            name: value.name
+                            name: value.name,
                         }
                     })
+                    console.log("-------------leaderboard---------------")
+
+                    console.log("this is the leaderboard", message)
                     setLeaderBoard(leaderBoard)
                     if (message.userPoints !== undefined) {
                         setField("userPoints", message.userPoints)
                     }
-                    if (message.userPosition) {
+                    if (message.userPosition !== undefined) {
                         setField("userPosition", message.userPosition)
+                    }
+                    if (message.correctAns !== undefined) {
+                        setField("correctAns", message.correctAns)    
+                    }
+                    if (message.isCorrect!== undefined) {
+                        setField("isCorrect", message.isCorrect)                        
                     }
                 } else if (message.state === "ENDED") {
                     setCurrentState("ENDED")

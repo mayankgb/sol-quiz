@@ -33,7 +33,9 @@ export interface LeaderBoard {
 interface LeaderBoardStore { 
     leaderBoard: LeaderBoard[]
     userPoints?: number,
-    userPosition?: number
+    userPosition?: number, 
+    isCorrect?: boolean,
+    correctAns?: string
     setField: <K extends keyof LeaderBoardStore>(key : K, value: LeaderBoardStore[K]) => void
     setLeaderBoard: (data: LeaderBoard[]) => void
 }
