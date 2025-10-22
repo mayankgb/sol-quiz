@@ -2,7 +2,7 @@
 
 import { useTotalPlayers, useUserSocket } from "@/store/liveQuiz"
 import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Users } from "lucide-react"
 
 export function WaitingPage() { 

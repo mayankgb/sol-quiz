@@ -2,7 +2,7 @@
 
 import { useTotalPlayers } from "@/store/quizstore"
 import {  useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Users } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"

@@ -2,7 +2,7 @@
 
 import { useCurrentQuestionStore } from "@/store/liveQuiz"
 import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Card } from "@/components/ui/card"
 import { Clock, Eye } from "lucide-react"
 

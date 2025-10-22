@@ -2,7 +2,7 @@
 
 import { useCurrentQuestionStore, useUserSocket } from "@/store/quizstore"
 import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Card } from "@/components/ui/card"
 import { Clock, Eye } from "lucide-react"
 import { toast } from "sonner"

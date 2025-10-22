@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Filter, Trophy, CreditCard, Edit, Play } from "lucide-react"
 import { getAllQuiz } from "@/app/actions/getquiz"
 import { useRouter } from "next/navigation"

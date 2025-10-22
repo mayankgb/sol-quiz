@@ -1,7 +1,7 @@
 "use client"
 
 import { useEndStateStore } from "@/store/liveQuiz"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2, Trophy } from "lucide-react"

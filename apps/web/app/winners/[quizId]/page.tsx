@@ -3,7 +3,7 @@
 import { getWinners } from "@/app/actions/getWinners"
 import { use, useEffect, useState } from "react"
 import { toast } from "sonner"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Trophy, Crown, Medal, ArrowLeft, Calendar, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { LAMPORTS_PER_SOL } from "@solana/web3.js"
