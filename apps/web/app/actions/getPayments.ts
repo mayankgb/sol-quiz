@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth"
 import { authOptions } from "../lib/auth"
-import { prisma } from "@/prisma"
+import { prisma } from "@/index"
 
 
 export async function getAllPayments(){ 

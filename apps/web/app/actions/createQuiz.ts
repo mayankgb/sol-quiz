@@ -1,6 +1,6 @@
 "use server"
 
-import { prisma } from "@/prisma"
+import { prisma } from "@/index"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../lib/auth"
 

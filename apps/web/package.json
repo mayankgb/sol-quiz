@@ -8,10 +8,11 @@
     "build": "bunx prisma generate && next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
-    "check-types": "tsc --noEmit", 
+    "check-types": "tsc --noEmit",
     "postinstall": "bunx prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "6.6.0",
     "@radix-ui/react-alert-dialog": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-label": "^2.1.4",
