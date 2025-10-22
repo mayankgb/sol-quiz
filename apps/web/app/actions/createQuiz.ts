@@ -3,33 +3,8 @@
 import { prisma } from "db/client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../lib/auth"
-import { stringify } from "querystring"
+
 import { Option, UpdatedOption, UpdatedQuestion } from "@/types/types"
-import { LAMPORTS_PER_SOL } from "@solana/web3.js"
-
-// export async function createQuiz() {
-//     try {
-
-//         const userId = await getServerses
-
-//         const newQuiz = await prisma.$transaction((tx): Promise<string> => {
-//             const as = await tx.quiz.create({
-//                 data: {
-//                     title: "asda",
-//                     userId
-//                 }
-//             })
-//         })
-
-//     } catch (e) {
-//         console.log(e)
-
-//         return {
-//             message: "something went wrong",
-//             status: 500
-//         }
-//     }
-// }
 
 export async function createQuestion(id: string, question: string, correctIndex: number, templateId: string, option: Option[]) {
     try {
