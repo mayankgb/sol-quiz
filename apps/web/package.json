@@ -8,8 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
-    "check-types": "tsc --noEmit", 
-    "postinstall": "bunx prisma generate"
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@prisma/client": "6.6.0",
