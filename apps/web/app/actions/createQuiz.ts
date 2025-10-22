@@ -3,9 +3,7 @@
 import { prisma } from "@/index"
 import { getServerSession } from "next-auth"
 import { authOptions } from "../lib/auth"
-
 import { Option, UpdatedOption, UpdatedQuestion } from "@/types/types"
-
 export async function createQuestion(id: string, question: string, correctIndex: number, templateId: string, option: Option[]) {
     try {
         const session = await getServerSession(authOptions)

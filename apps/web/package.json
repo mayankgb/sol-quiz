@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "check-types": "tsc --noEmit", 
-    "postinstall": "bunx prisma generate"
+    "postinstall": "npm prisma generate --schema prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "6.6.0",
