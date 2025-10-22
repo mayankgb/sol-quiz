@@ -7,6 +7,7 @@ import { RoomManager } from "./roomManager/roomManager";
 import type { CustomWebsocket } from "./types/types";
 import { adminRouter } from "./routes/admin";
 import { userRouter } from "./routes/user";
+import { serviceRouter } from "./routes/services";
 
 dotenv.config()
 
@@ -23,6 +24,7 @@ app.use(cors({
 app.use(express.json())
 app.use("/admin", adminRouter)
 app.use('/user', userRouter)
+app.use("/service", serviceRouter)
 const wss = new WebSocketServer({server: server})
 
 wss.on("connection", function(ws: CustomWebsocket) {

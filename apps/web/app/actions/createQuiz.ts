@@ -581,6 +581,28 @@ export async function updateQuizStatus(templateId: string) {
             }
         }
 
+        const isQuestion = await prisma.template.findFirst({ 
+            where: { 
+                id: templateId, 
+            }, 
+            select: { 
+                _count: {
+                    select : { 
+                        Question: true
+                    }
+                }
+            }
+        })
+
+        const a = isQuestion?._count.Question
+
+        if (!isQuestion?._count.Question) {
+           return{ 
+            message: "quiz atleast have 1 question", 
+            status: 400
+           } 
+        }
+
         const response = await prisma.quiz.updateMany({ 
             where: { 
                 templateId: templateId, 
