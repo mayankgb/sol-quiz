@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth"
 import { authOptions } from "../lib/auth"
-import { prisma } from "db/client"
+import { prisma } from "@/prisma"
 
 export async function deleteQuestion(templateId: string, questionId: string) { 
     try { 
