@@ -3,7 +3,7 @@
 import { getAllPayments } from "@/app/actions/getPayments"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { ChevronDown, Clock, CheckCircle2, FileText, Ban } from "lucide-react"
 
 interface QuizPayments { 
