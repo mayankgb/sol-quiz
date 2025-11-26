@@ -105,19 +105,20 @@ app.listen(port, () => {
 
 async function updatePendingPayments(data: nativeTransfers, signature: string) {
     console.log("this is the data from the webhook", data)
+
     const response = await prisma.$transaction(async (tx) => {
         const existingPaymemts = await tx.pendingPayments.findFirst({
             where: {
                 signature: signature,
                 walletAddress: data.fromUserAccount,
-                status: "PENDING"
             },
             select: {
-                id: true
+                id: true, 
+                status: true
             }
         })
 
-        if (existingPaymemts) {
+        if (existingPaymemts?.status === "PENDING") {
             await tx.pendingPayments.update({
                 where: {
                     signature: signature,
@@ -138,6 +139,10 @@ async function updatePendingPayments(data: nativeTransfers, signature: string) {
                     amount: data.amount
                 }
             })
+            return existingPaymemts.id
+
+        }else if (existingPaymemts?.status === "CONFIRMED") { 
+            console.log("payment is already updated with the status confirm")
             return existingPaymemts.id
         }
         const lostTransaction = await tx.lostTransaction.create({
