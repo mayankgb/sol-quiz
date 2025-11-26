@@ -8,6 +8,11 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
+type sig = string
+type status = "CONFIRM" | "PENDING"
+
+const signatureMap = new Map<sig, status>()
+
 app.use(express.json())
 app.use(cors({
     origin: "*"
@@ -29,6 +34,8 @@ app.get("/ping", async (req, res) => {
 
 app.post("/helius", async (req, res) => {
 
+    const pendingSignature: string = req.body[0].signature ?? ''
+
     try {
         const header = req.headers.authorization
         console.log(header)
@@ -47,28 +54,43 @@ app.post("/helius", async (req, res) => {
 
         if (req.body[0].type !== "TRANSFER") {
             console.log("invalid request")
-            res.json({ 
+            res.json({
                 message: "invalid request"
             })
             return
         }
 
         const body = req.body[0].nativeTransfers[0] as nativeTransfers
-        console.log("this is the native transafer",req.body[0].nativeTransfers[0])
+        console.log("this is the native transafer", req.body[0].nativeTransfers[0])
+        const signature = req.body[0].signature
+
+        if (signatureMap.has(signature)) {
+            console.log("signture is already in the process");
+            res.json({
+                message: "already in the queue"
+            })
+            return
+        }
+
+        signatureMap.set(signature, "PENDING")
 
         if (body.toUserAccount === "7F1QYPbU3uvFagtRmXJKtYQ9NTeQcqTjNxZz3KSfatVX") {
             const response = await updatePendingPayments(body, req.body[0].signature)
             console.log(response)
         } else if (body.fromUserAccount === "7F1QYPbU3uvFagtRmXJKtYQ9NTeQcqTjNxZz3KSfatVX") {
-           const response = await updateParticipantBalance(body, req.body[0].signature)
-           console.log(response)
+            const response = await updateParticipantBalance(body, req.body[0].signature)
+            console.log(response)
         }
+        signatureMap.delete(signature)
         res.status(200).json({
             message: "working"
         })
         return
     } catch (e) {
         console.log(e)
+        if (pendingSignature.length > 0) {
+            signatureMap.delete(pendingSignature)    
+        }
         res.status(500).json({
             message: "something went wrong"
         })
@@ -82,7 +104,7 @@ app.listen(port, () => {
 })
 
 async function updatePendingPayments(data: nativeTransfers, signature: string) {
-    console.log("this is the data from the webhook",data)
+    console.log("this is the data from the webhook", data)
     const response = await prisma.$transaction(async (tx) => {
         const existingPaymemts = await tx.pendingPayments.findFirst({
             where: {
@@ -136,10 +158,11 @@ async function updatePendingPayments(data: nativeTransfers, signature: string) {
 }
 
 async function updateParticipantBalance(data: nativeTransfers, signature: string) {
+
     const response = await prisma.$transaction(async (tx) => {
         const existingParitcipant = await tx.participantRank.findFirst({
             where: {
-                signature: signature, 
+                signature: signature,
                 walletAddress: data.toUserAccount,
                 creditStatus: "PENDING"
             },
@@ -150,7 +173,7 @@ async function updateParticipantBalance(data: nativeTransfers, signature: string
         if (existingParitcipant) {
             await tx.participantRank.update({
                 where: {
-                    signature: signature, 
+                    signature: signature,
                     walletAddress: data.toUserAccount,
                     creditStatus: "PENDING"
                 },
@@ -177,5 +200,6 @@ async function updateParticipantBalance(data: nativeTransfers, signature: string
         return lostTransactionId.id
 
     })
+
     return response
 }
