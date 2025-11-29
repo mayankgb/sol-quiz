@@ -18,6 +18,7 @@ export class RoomManager {
     private RegularRoom: Map<roomId, Room>
     roomkey: Map<roomKey, roomId>
     private redis: Redis
+    private adminTimeout: Map<adminId, NodeJS.Timeout | null > 
 
 
     private constructor() {
@@ -26,6 +27,7 @@ export class RoomManager {
         this.PaidRoom = new Map()
         this.RegularRoom = new Map()
         this.roomkey = new Map()
+        this.adminTimeout = new Map()
         this.redis = new Redis({
             host: process.env.BROKERS,
             password: process.env.PASSWORD,
@@ -44,10 +46,14 @@ export class RoomManager {
 
     adminJoin(adminId: string, adminWs: CustomWebsocket) {
         const existingRoomId = this.roomAdmin.get(adminId)
+        if (this.adminTimeout.get(adminId) !== null) {
+           this.adminTimeout.set(adminId, null) 
+        }
         console.log(adminId)
         console.log("roomAdmin", this.roomAdmin)
         console.log("existingRoomId", existingRoomId)
         if (existingRoomId) {
+            this.adminTimeout.set(adminId, null)
             if (this.PaidRoom.has(existingRoomId)) {
                 this.PaidRoom.get(existingRoomId)?.adminJoin(adminWs)
                 return
@@ -409,47 +415,13 @@ export class RoomManager {
     }
 
 
-    async disconnect(ws: CustomWebsocket) {
-        try {
-
+     disconnect(ws: CustomWebsocket) {
             const room = this.PaidRoom.get(ws.roomId) ? this.PaidRoom.get(ws.roomId) : (this.RegularRoom.get(ws.roomId) ? this.RegularRoom.get(ws.roomId) : this.campaignsRoom.get(ws.roomId))
             if (!room) {
                 return
             }
             const roomResponse = room?.disconnect(ws)
-
-            if (roomResponse.type === "admin" && room.user.length < 2) {
-
-                console.log("room deleted")
-                console.log("----paid rooms-----", this.PaidRoom)
-
-                this.roomAdmin.delete(room.adminId)
-                this.RegularRoom.delete(room.roomId)
-                this.PaidRoom.delete(room.roomId)
-                this.campaignsRoom.delete(room.roomId)
-                this.roomkey.delete(room.roomkey)
-
-                const response = await prisma.quiz.update({
-                    where: {
-                        id: room.roomId
-                    },
-                    data: {
-                        quizStatus: "CREATED"
-                    },
-                    select: {
-                        id: true
-                    }
-                })
-                return response.id
-            }
-            return
-
-        } catch (e) {
-            console.log("websocket disconnect error")
-            console.log(e)
             return
         }
-    }
-
 
 }

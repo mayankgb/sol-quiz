@@ -104,7 +104,7 @@ wss.on("connection", function (ws: CustomWebsocket) {
     })
 
     ws.on("close", async () => {
-        await RoomManager.getInstance().disconnect(ws)
+         RoomManager.getInstance().disconnect(ws)
     })
     // ws.on('close')
 

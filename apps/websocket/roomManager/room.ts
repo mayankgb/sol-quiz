@@ -454,17 +454,6 @@ export class Room {
         } else if (ws.adminId) {
             this.adminWs = null
             if (this.currentState === "WAITING") {
-                if (this.user.length < 2) {
-                    this.userWs.forEach((wss) => {
-                        wss?.send(JSON.stringify({
-                            type: "quit",
-                            message: "admin is disconnected sufficient user are not present in the quiz so quiz is postponed"
-                        }))
-                    })
-                    return {
-                        type: "admin"
-                    }
-                }
                 setTimeout(() => {
                     if (this.adminWs) {
                         return
@@ -475,7 +464,7 @@ export class Room {
                 this.userWs.forEach((wss) => {
                     wss?.send(JSON.stringify({
                         type: "error",
-                        message: "next question will appear in 5 seconds"
+                        message: "admin disconnected"
                     }))
                 })
 
@@ -487,6 +476,5 @@ export class Room {
             return { type: "none" }
         }
     }
-
 
 }
