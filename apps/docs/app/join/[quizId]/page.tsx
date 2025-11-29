@@ -6,7 +6,7 @@ import { QuestionPage } from "@/app/components/liveQuiz/questionPage"
 import { WaitingPage } from "@/app/components/liveQuiz/waiting"
 import { EndState, useCurrentQuestionStore, useCurrentQuizStateStore, useEndStateStore, useLeaderBoardStore, useTotalPlayers, useUserSocket } from "@/store/quizstore"
 import { useRouter } from "next/navigation"
-import { use, useEffect } from "react"
+import { useEffect } from "react"
 import { toast } from "sonner"
 
 interface CurrentQuestion {
@@ -31,7 +31,6 @@ interface LeaderBoard {
 
 export default function Join({ params }: { params: Promise<{ quizId: string }> }) {
 
-    const { quizId } = use(params)
     const {currentState, setCurrentState } = useCurrentQuizStateStore()
     const { setTotalPlayers } = useTotalPlayers()
     const { setCurrentQuestion } = useCurrentQuestionStore()
@@ -126,7 +125,11 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
                 } else if(message.type === "error"){
                     toast.error(message.message)
                     return
-                }else { 
+                }else if (message.type === "quit"){ 
+                    toast.error(message.message)
+                    router.push("/")
+                }
+                else { 
                     toast.error(JSON.stringify(message))
                     return
                 }

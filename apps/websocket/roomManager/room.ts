@@ -90,14 +90,14 @@ export class Room {
         this.adminWs = ws
         ws.adminId = this.adminId
         ws.roomId = this.roomId
-        ws.quizType =  this.isCampaign ? "CAMPAIGN" : this.isPrizePool ? "PAID" :"REGULAR"
+        ws.quizType = this.isCampaign ? "CAMPAIGN" : this.isPrizePool ? "PAID" : "REGULAR"
         this.sendQuestion(this.adminWs, this.adminId)
         return
     }
 
     next() {
 
-      console.log("--------inside next--------")
+        console.log("--------inside next--------")
         if (this.currentState !== "WAITING") {
             this.adminWs?.send(JSON.stringify({
                 type: "error",
@@ -153,7 +153,7 @@ export class Room {
             status: 200,
             questionId: this.currentQuestion?.questionId
         }))
-        setTimeout(() => { 
+        setTimeout(() => {
             this.leaderBoard()
         }, 10 * 1000)
         return
@@ -171,7 +171,7 @@ export class Room {
         }
         participantWs.userId = participantId
         participantWs.roomId = this.roomId
-        participantWs.quizType = this.isCampaign ? "CAMPAIGN" : this.isPrizePool ? "PAID" :"REGULAR"
+        participantWs.quizType = this.isCampaign ? "CAMPAIGN" : this.isPrizePool ? "PAID" : "REGULAR"
         this.userWs.set(participantId, participantWs)
 
         this.sendQuestion(participantWs, participantId)
@@ -194,8 +194,8 @@ export class Room {
         const newUser: Participant = {
             name: name,
             participantId: newUserId,
-            submission:[],
-            points: 0, 
+            submission: [],
+            points: 0,
             walletAddress: walletAddress
         }
 
@@ -203,7 +203,7 @@ export class Room {
         this.userWs.set(newUserId, null)
         return {
             userId: newUserId,
-            message:"user created",
+            message: "user created",
             status: 200
         }
 
@@ -212,11 +212,11 @@ export class Room {
     join(ws: CustomWebsocket, participantId: string) {
 
         console.log("--------inside join--------")
-    
+
         const existingUser = this.user.find((value) => value.participantId === participantId)
         ws.userId = participantId
         ws.roomId = this.roomId
-        ws.quizType = this.isCampaign ? "CAMPAIGN" : this.isPrizePool ? "PAID" :"REGULAR"
+        ws.quizType = this.isCampaign ? "CAMPAIGN" : this.isPrizePool ? "PAID" : "REGULAR"
         this.userWs.set(participantId, ws)
         this.sendQuestion(ws, participantId)
 
@@ -233,7 +233,7 @@ export class Room {
         console.log("--------leaderboard--------")
 
         const currentLeaderBoard = this.calculateResult()
-        
+
         console.log("-----leaderboard correctness-------- \n", this.submissionCorrectness)
 
         this.user.map((value, index) => {
@@ -249,7 +249,7 @@ export class Room {
 
         this.submissionCorrectness.clear()
 
-        this.adminWs?.send(JSON.stringify({ 
+        this.adminWs?.send(JSON.stringify({
             state: this.currentState,
             leaderBoard: currentLeaderBoard,
         }))
@@ -262,8 +262,8 @@ export class Room {
                         state: this.currentState,
                         userPoint: this.user[0]?.points,
                         userName: this.user[0]?.name,
-                        CorrectQuestions: this.user[0]?.submission.map((value) => value.isCorrect && value).length, 
-                        isWinner: this.user[0]?.participantId === ws.userId 
+                        CorrectQuestions: this.user[0]?.submission.map((value) => value.isCorrect && value).length,
+                        isWinner: this.user[0]?.participantId === ws.userId
                     }))
                 })
                 this.adminWs?.send(JSON.stringify({
@@ -322,7 +322,7 @@ export class Room {
                     options: this.currentQuestion?.options,
                     state: this.currentState,
                     totalPoints: (1000 - 500 * ((new Date().getTime() - this.startTime) / (10 * 1000))),
-                    startTime: this.startTime, 
+                    startTime: this.startTime,
                     questionId: this.currentQuestion?.questionId
                 }))
                 break;
@@ -364,7 +364,7 @@ export class Room {
 
         const time = new Date().getTime()
         console.log("--------submission--------")
-        console.log("submissoion parameter", "participantId",participantId,"questionId", questionId, optionIndex)
+        console.log("submissoion parameter", "participantId", participantId, "questionId", questionId, optionIndex)
 
         if (this.currentState !== "STARTED") {
             return {
@@ -442,36 +442,49 @@ export class Room {
             walletAddress: value.walletAddress,
             rank: index + 1
         }))
-        this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, participant, ((this.isCampaign || this.isPrizePool) ? "PAID" :"REGULAR"))
+        this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, participant, ((this.isCampaign || this.isPrizePool) ? "PAID" : "REGULAR"))
     }
 
-    disconnect(ws: CustomWebsocket): { type: 'none' | "admin" | "user"} {
+    disconnect(ws: CustomWebsocket): { type: 'none' | "admin" | "user" } {
         if (ws.userId) {
             this.userWs.set(ws.userId, null)
-            return { 
+            return {
                 type: "user"
             }
-        }else if (ws.adminId) {
+        } else if (ws.adminId) {
             this.adminWs = null
             if (this.currentState === "WAITING") {
+                if (this.user.length < 2) {
+                    this.userWs.forEach((wss) => {
+                        wss?.send(JSON.stringify({
+                            type: "quit",
+                            message: "admin is disconnected sufficient user are not present in the quiz so quiz is postponed"
+                        }))
+                    })
+                    return {
+                        type: "admin"
+                    }
+                }
                 setTimeout(() => {
                     if (this.adminWs) {
                         return
                     }
                     this.next()
                 }, 5 * 1000)
+
                 this.userWs.forEach((wss) => {
                     wss?.send(JSON.stringify({
                         type: "error",
                         message: "next question will appear in 5 seconds"
-                    }) )
+                    }))
                 })
+
             }
-            return { 
+            return {
                 type: "admin"
             }
-        }else { 
-           return { type: "none"}
+        } else {
+            return { type: "none" }
         }
     }
 
