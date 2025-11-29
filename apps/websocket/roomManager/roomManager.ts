@@ -27,11 +27,11 @@ export class RoomManager {
         this.RegularRoom = new Map()
         this.roomkey = new Map()
         this.redis = new Redis({
-        host: process.env.BROKERS, 
-        password: process.env.PASSWORD, 
-        port: 19373, 
-        db: 0
-    });
+            host: process.env.BROKERS,
+            password: process.env.PASSWORD,
+            port: 19373,
+            db: 0
+        });
 
     }
 
@@ -59,10 +59,10 @@ export class RoomManager {
             }
         } else {
             console.log("admin access forbidden, roomAdmin", this.roomAdmin)
-            console.log("admin access forbidden admin id",adminId)
+            console.log("admin access forbidden admin id", adminId)
             adminWs.send(JSON.stringify({
                 message: "unauthorised access",
-                type:"forbidden"
+                type: "forbidden"
             }))
         }
 
@@ -266,11 +266,11 @@ export class RoomManager {
                 return newQuestion
             })
 
-            const newRoom = new Room(questions, adminId, quizId, this.removeQuiz.bind(this), response.template.isCampaign, response.isPrizePool, response.amount, response.template.title, response.template.tagLine || undefined, response.template.PromotionalLink ?? undefined, response.template.BrandName ?? undefined)
+            const roomKey = Math.floor(100000 + Math.random() * 900000);
+            this.roomkey.set(roomKey, quizId)
+            const newRoom = new Room(questions, adminId, quizId, roomKey, this.removeQuiz.bind(this), response.template.isCampaign, response.isPrizePool, response.amount, response.template.title, response.template.tagLine || undefined, response.template.PromotionalLink ?? undefined, response.template.BrandName ?? undefined)
             if (response.isPrizePool) {
                 if (response.template.isCampaign) {
-                    const roomKey = Math.floor(100000 + Math.random() * 900000);
-                    this.roomkey.set(roomKey, quizId)
                     this.campaignsRoom.set(quizId, newRoom)
                     return {
                         message: "quiz initialised",
@@ -278,8 +278,6 @@ export class RoomManager {
                         roomKey: roomKey
                     }
                 }
-                const roomKey = Math.floor(100000 + Math.random() * 900000);
-                this.roomkey.set(roomKey, quizId)
                 this.PaidRoom.set(quizId, newRoom)
                 return {
                     message: "quiz initialised",
@@ -287,8 +285,7 @@ export class RoomManager {
                     roomKey: roomKey
                 }
             }
-            const roomKey = Math.floor(100000 + Math.random() * 900000);
-            this.roomkey.set(roomKey, quizId)
+
             this.RegularRoom.set(quizId, newRoom)
             return {
                 message: "quiz initialised",
@@ -387,7 +384,7 @@ export class RoomManager {
         console.log("------solana data -------")
         try {
 
-             this.redis.xadd(
+            this.redis.xadd(
                 "quizchain",
                 "*",
                 "id", data.id,
@@ -412,10 +409,43 @@ export class RoomManager {
     }
 
 
-    disconnect(ws: CustomWebsocket) {
-        const room = this.PaidRoom.get(ws.roomId) ? this.PaidRoom.get(ws.roomId) : (this.RegularRoom.get(ws.roomId) ? this.RegularRoom.get(ws.roomId) : this.campaignsRoom.get(ws.roomId))
-        room?.disconnect(ws)
-        return
+    async disconnect(ws: CustomWebsocket) {
+        try {
+
+            const room = this.PaidRoom.get(ws.roomId) ? this.PaidRoom.get(ws.roomId) : (this.RegularRoom.get(ws.roomId) ? this.RegularRoom.get(ws.roomId) : this.campaignsRoom.get(ws.roomId))
+            if (!room) {
+                return
+            }
+            const roomResponse = room?.disconnect(ws)
+
+            if (roomResponse.type === "admin" && room.user.length < 2) {
+
+                this.roomAdmin.delete(room.adminId)
+                this.RegularRoom.delete(room.roomId)
+                this.PaidRoom.delete(room.roomId)
+                this.campaignsRoom.delete(room.roomId)
+                this.roomkey.delete(room.roomkey)
+
+                const response = await prisma.quiz.update({
+                    where: {
+                        id: room.roomId
+                    },
+                    data: {
+                        quizStatus: "CREATED"
+                    },
+                    select: {
+                        id: true
+                    }
+                })
+                return response.id
+            }
+            return
+
+        } catch (e) {
+            console.log("websocket disconnect error")
+            console.log(e)
+            return
+        }
     }
 
 

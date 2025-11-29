@@ -27,7 +27,7 @@ export class Room {
     userWs: Map<participantId, CustomWebsocket | null>
     adminId: string
     adminWs: CustomWebsocket | null
-    roomkey?: number
+    roomkey: number
     question: Question[]
     currentQuestion: Question | null
     currentState: "LEADERBOARD" | "WAITING" | "STARTED" | 'ENDED'
@@ -49,6 +49,7 @@ export class Room {
         question: Question[],
         adminId: string,
         roomId: string,
+        roomkey: number,
         callback: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType) => void,
         isCampaign: boolean,
         isPrizePool: boolean,
@@ -59,6 +60,7 @@ export class Room {
         BrandName?: string) {
 
         this.user = []
+        this.roomkey = roomkey
         this.userWs = new Map()
         this.adminWs = null
         this.currentQuestion = null
@@ -443,9 +445,12 @@ export class Room {
         this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, participant, ((this.isCampaign || this.isPrizePool) ? "PAID" :"REGULAR"))
     }
 
-    disconnect(ws: CustomWebsocket) {
+    disconnect(ws: CustomWebsocket): { type: 'none' | "admin" | "user"} {
         if (ws.userId) {
             this.userWs.set(ws.userId, null)
+            return { 
+                type: "user"
+            }
         }else if (ws.adminId) {
             this.adminWs = null
             if (this.currentState === "WAITING") {
@@ -462,6 +467,11 @@ export class Room {
                     }) )
                 })
             }
+            return { 
+                type: "admin"
+            }
+        }else { 
+           return { type: "none"}
         }
     }
 

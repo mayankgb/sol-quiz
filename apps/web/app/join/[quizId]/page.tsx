@@ -6,7 +6,7 @@ import { QuestionPage } from "@/app/_components/livequizPage/questionPage"
 import { WaitingPage } from "@/app/_components/livequizPage/WaitingPage"
 import { EndState, useCurrentQuestionStore, useCurrentQuizStateStore, useEndStateStore, useLeaderBoardStore, useTotalPlayers, useUserSocket } from "@/store/liveQuiz"
 import { useSession } from "next-auth/react"
-import { use, useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 interface CurrentQuestion { 
@@ -30,7 +30,7 @@ interface LeaderBoard {
 
 export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
 
-    const { quizId } = use(params)
+    const intervalRef = useRef< NodeJS.Timeout | null>(null)
     const session = useSession()
     const { currentState ,setCurrentState} = useCurrentQuizStateStore()
     const {setTotalPlayers} = useTotalPlayers()
@@ -57,6 +57,12 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
                     jwtToken: session.data?.user.jwtToken, 
                     request: "adminJoin"
                 }))
+                const timer = setInterval(() => { 
+                    socket.send(JSON.stringify({ 
+                        request: "ping"
+                    }))
+                }, 3 * 1000)
+                intervalRef.current = timer
                 
             }
             
@@ -120,6 +126,10 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
             }
         }
         main()
+
+        return () => { 
+            clearInterval(intervalRef.current ?? undefined)
+        }
     },[session])
 
     return ( 
