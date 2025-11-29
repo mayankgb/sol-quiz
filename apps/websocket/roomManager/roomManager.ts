@@ -420,6 +420,9 @@ export class RoomManager {
 
             if (roomResponse.type === "admin" && room.user.length < 2) {
 
+                console.log("room deleted")
+                console.log("----paid rooms-----", this.PaidRoom)
+
                 this.roomAdmin.delete(room.adminId)
                 this.RegularRoom.delete(room.roomId)
                 this.PaidRoom.delete(room.roomId)
