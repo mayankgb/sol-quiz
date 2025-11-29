@@ -61,7 +61,7 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
                     socket.send(JSON.stringify({ 
                         request: "ping"
                     }))
-                }, 3 * 1000)
+                }, 30 * 1000)
                 intervalRef.current = timer
                 
             }

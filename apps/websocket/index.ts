@@ -42,7 +42,7 @@ wss.on("connection", function (ws: CustomWebsocket) {
             switch (message.request) {
 
                 case "ping":
-                    ws.send("pong")
+                    ws.ping()
                     break;
 
                 case "join":

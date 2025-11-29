@@ -108,7 +108,7 @@ export class Room {
         }
 
         console.log("-------- next user length--------", this.user.length)
-        if (this.user.length === 0) {
+        if (this.user.length < 2) {
             this.adminWs?.send(JSON.stringify({
                 type: "error",
                 message: "you need atleast two user to start the quiz"
