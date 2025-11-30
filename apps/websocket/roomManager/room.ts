@@ -34,7 +34,7 @@ export class Room {
     questionIndex: number
     private submissionCorrectness: Map<participantId, isCorrect>
     startTime!: number
-    onEndQuiz: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType) => void
+    onEndQuiz: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType, isConnected: boolean) => void
     isPrizePool: boolean
     amount: number
     logo?: string
@@ -44,13 +44,14 @@ export class Room {
     BrandName?: string
     isCampaign: boolean
     correctAnswer?: string
+    adminTimeout: NodeJS.Timeout | null
 
     constructor(
         question: Question[],
         adminId: string,
         roomId: string,
         roomkey: number,
-        callback: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType) => void,
+        callback: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType, isConnected: boolean) => void,
         isCampaign: boolean,
         isPrizePool: boolean,
         amount: number,
@@ -78,6 +79,7 @@ export class Room {
         this.tagline = tagline
         this.amount = amount
         this.roomId = roomId
+        this.adminTimeout = null
     }
 
     startQuiz() {
@@ -86,7 +88,11 @@ export class Room {
 
     adminJoin(ws: CustomWebsocket) {
 
-        console.log("--------inside room---------")
+        console.log("--------admin inside room---------")
+        if (this.adminTimeout !== null) {
+            clearInterval(this.adminTimeout) 
+            this.adminTimeout = null
+        }
         this.adminWs = ws
         ws.adminId = this.adminId
         ws.roomId = this.roomId
@@ -211,7 +217,7 @@ export class Room {
 
     join(ws: CustomWebsocket, participantId: string) {
 
-        console.log("--------inside join--------")
+        console.log("--------user inside join--------")
 
         const existingUser = this.user.find((value) => value.participantId === participantId)
         ws.userId = participantId
@@ -442,7 +448,7 @@ export class Room {
             walletAddress: value.walletAddress,
             rank: index + 1
         }))
-        this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, participant, ((this.isCampaign || this.isPrizePool) ? "PAID" : "REGULAR"))
+        this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, participant, ((this.isCampaign || this.isPrizePool) ? "PAID" : "REGULAR"), true)
     }
 
     disconnect(ws: CustomWebsocket): { type: 'none' | "admin" | "user" } {
@@ -453,6 +459,22 @@ export class Room {
             }
         } else if (ws.adminId) {
             this.adminWs = null
+            if (this.user.length < 2) {
+                clearInterval(this.adminTimeout !== null ? this.adminTimeout : undefined)
+                this.adminTimeout = setInterval(() => {
+                    this.userWs.forEach((userWs) => {
+                        userWs?.send(JSON.stringify({
+                            type: "quit",
+                            message: "admin disconnected quiz is postponed"
+                        }))
+                    })
+
+                }, 10 * 1000)
+                return {
+                    type: "admin"
+                }
+            }
+
             if (this.currentState === "WAITING") {
                 setTimeout(() => {
                     if (this.adminWs) {
@@ -464,7 +486,7 @@ export class Room {
                 this.userWs.forEach((wss) => {
                     wss?.send(JSON.stringify({
                         type: "error",
-                        message: "admin disconnected"
+                        message: "question will appear in next 5 seconds"
                     }))
                 })
 

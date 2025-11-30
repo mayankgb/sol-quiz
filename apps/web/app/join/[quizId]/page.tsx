@@ -130,7 +130,7 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
         return () => { 
             clearInterval(intervalRef.current ?? undefined)
         }
-    },[session])
+    },[])
 
     return ( 
         <div className="h-screen w-screen">

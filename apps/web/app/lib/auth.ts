@@ -90,19 +90,19 @@ export const authOptions = {
     pages: {
         signIn: "/signin"
     },
-    //      cookies: {
-    //         sessionToken: {
-    //           name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
-    //           options: {
-    //             httpOnly: true,
-    //             sameSite: "lax",
-    //             path: "/",
-    //             secure: process.env.NODE_ENV === "production",
-    //           },
-    //         },
-    //       },
-    //       session: {
-    //         strategy: "jwt" as SessionStrategy,
-    //         maxAge: 60 * 60 * 24 * 3,
-    //       },
+         cookies: {
+            sessionToken: {
+              name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
+              options: {
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
+                secure: process.env.NODE_ENV === "production",
+              },
+            },
+          },
+          session: {
+            strategy: "jwt" as SessionStrategy,
+            maxAge: 60 * 60 * 24 * 3,
+          },
 }

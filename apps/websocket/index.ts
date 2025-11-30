@@ -33,6 +33,10 @@ wss.on("connection", function (ws: CustomWebsocket) {
         console.log('error', e)
     })
 
+    ws.on("pong" , () => { 
+        console.log("responend using pong")
+    })
+
     ws.on("message", async (data: any) => {
         try {
             const message = JSON.parse(data)
@@ -42,6 +46,8 @@ wss.on("connection", function (ws: CustomWebsocket) {
             switch (message.request) {
 
                 case "ping":
+                    console.log("ping")
+                    
                     ws.ping()
                     break;
 

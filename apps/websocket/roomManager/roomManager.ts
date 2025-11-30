@@ -18,7 +18,7 @@ export class RoomManager {
     private RegularRoom: Map<roomId, Room>
     roomkey: Map<roomKey, roomId>
     private redis: Redis
-    private adminTimeout: Map<adminId, NodeJS.Timeout | null > 
+    private adminTimeout: Map<adminId, NodeJS.Timeout | null>
 
 
     private constructor() {
@@ -47,7 +47,7 @@ export class RoomManager {
     adminJoin(adminId: string, adminWs: CustomWebsocket) {
         const existingRoomId = this.roomAdmin.get(adminId)
         if (this.adminTimeout.get(adminId) !== null) {
-           this.adminTimeout.set(adminId, null) 
+            this.adminTimeout.set(adminId, null)
         }
         console.log(adminId)
         console.log("roomAdmin", this.roomAdmin)
@@ -310,21 +310,26 @@ export class RoomManager {
 
     }
 
-    private async removeQuiz(roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quiztype: QuizType) {
+    private async removeQuiz(roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quiztype: QuizType, isConnected: boolean) {
 
         console.log("-----remove quiz------")
 
-        if (quiztype === "PAID" || quiztype === "CAMPAIGN") {
-            const winner = participant.shift()
-            if (!winner) {
-                return
+        if (isConnected) {
+            if (quiztype === "PAID" || quiztype === "CAMPAIGN") {
+                const winner = participant.shift()
+                if (!winner) {
+                    return
+                }
+                await this.sendSolana(winner)
             }
-            await this.sendSolana(winner)
-        }
-        if (participant && participant.length) {
-            await this.updateQuiz(participant, roomId)
+            if (participant && participant.length) {
+                await this.updateQuiz(participant, roomId)
+            }
         }
 
+        if (!isConnected) {
+            await this.updateQuizStatus(roomId)
+        }
         this.roomAdmin.delete(adminId)
         this.RegularRoom.delete(roomId)
         this.PaidRoom.delete(roomId)
@@ -415,13 +420,36 @@ export class RoomManager {
     }
 
 
-     disconnect(ws: CustomWebsocket) {
-            const room = this.PaidRoom.get(ws.roomId) ? this.PaidRoom.get(ws.roomId) : (this.RegularRoom.get(ws.roomId) ? this.RegularRoom.get(ws.roomId) : this.campaignsRoom.get(ws.roomId))
-            if (!room) {
-                return
-            }
-            const roomResponse = room?.disconnect(ws)
+    disconnect(ws: CustomWebsocket) {
+        const room = this.PaidRoom.get(ws.roomId) ? this.PaidRoom.get(ws.roomId) : (this.RegularRoom.get(ws.roomId) ? this.RegularRoom.get(ws.roomId) : this.campaignsRoom.get(ws.roomId))
+        if (!room) {
             return
         }
+        room?.disconnect(ws)
+        return
+    }
+
+
+    private async updateQuizStatus(quizId:string ) { 
+        try { 
+
+            const response = await prisma.quiz.update({ 
+                where: { 
+                    id: quizId
+                }, 
+                data: { 
+                    quizStatus: "CREATED"
+                }, 
+                select: { 
+                    id: true
+                }
+            })
+            return response.id
+
+        }catch(e) { 
+            console.log(e)
+            return 
+        }
+    }
 
 }
