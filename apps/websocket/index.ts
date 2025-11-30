@@ -32,22 +32,18 @@ wss.on("connection", function (ws: CustomWebsocket) {
     ws.on('error', (e) => {
         console.log('error', e)
     })
-
-    ws.on("pong" , () => { 
-        console.log("responend using pong")
-    })
-
     ws.on("message", async (data: any) => {
         try {
             const message = JSON.parse(data)
 
             console.log("websocket message", message)
+            ws.on("pong", () => { 
+                console.log("pong")
+            })
 
             switch (message.request) {
 
                 case "ping":
-                    console.log("ping")
-                    
                     ws.ping()
                     break;
 
@@ -110,7 +106,8 @@ wss.on("connection", function (ws: CustomWebsocket) {
     })
 
     ws.on("close", async () => {
-         RoomManager.getInstance().disconnect(ws)
+        console.log("asasd")
+        RoomManager.getInstance().disconnect(ws)
     })
     // ws.on('close')
 

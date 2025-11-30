@@ -313,6 +313,7 @@ export class RoomManager {
     private async removeQuiz(roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quiztype: QuizType, isConnected: boolean) {
 
         console.log("-----remove quiz------")
+        console.log("---isconnected----", isConnected)
 
         if (isConnected) {
             if (quiztype === "PAID" || quiztype === "CAMPAIGN") {

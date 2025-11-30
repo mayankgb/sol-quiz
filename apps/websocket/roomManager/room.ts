@@ -34,7 +34,7 @@ export class Room {
     questionIndex: number
     private submissionCorrectness: Map<participantId, isCorrect>
     startTime!: number
-    onEndQuiz: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType, isConnected: boolean) => void
+    onEndQuiz: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType, isConnected: boolean) => Promise<void>
     isPrizePool: boolean
     amount: number
     logo?: string
@@ -51,7 +51,7 @@ export class Room {
         adminId: string,
         roomId: string,
         roomkey: number,
-        callback: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType, isConnected: boolean) => void,
+        callback: (roomId: string, roomKey: number, adminId: string, participant: DbParticipant[], quizType: QuizType, isConnected: boolean) => Promise<void>,
         isCampaign: boolean,
         isPrizePool: boolean,
         amount: number,
@@ -90,7 +90,8 @@ export class Room {
 
         console.log("--------admin inside room---------")
         if (this.adminTimeout !== null) {
-            clearInterval(this.adminTimeout) 
+            console.log("--------admin null karne ke liye ============")
+            clearTimeout(this.adminTimeout) 
             this.adminTimeout = null
         }
         this.adminWs = ws
@@ -164,27 +165,6 @@ export class Room {
         }, 10 * 1000)
         return
 
-    }
-
-    rejoin(participantWs: CustomWebsocket, participantId: string) {
-        const existingparticipant = this.userWs.has(participantId)
-        if (!existingparticipant) {
-            return {
-                type: "error",
-                message: "you are not the existingUser",
-                status: 400
-            }
-        }
-        participantWs.userId = participantId
-        participantWs.roomId = this.roomId
-        participantWs.quizType = this.isCampaign ? "CAMPAIGN" : this.isPrizePool ? "PAID" : "REGULAR"
-        this.userWs.set(participantId, participantWs)
-
-        this.sendQuestion(participantWs, participantId)
-        return {
-            message: "ok",
-            status: 200
-        }
     }
 
     createUser(name: string, walletAddress?: string) {
@@ -261,7 +241,7 @@ export class Room {
         }))
 
         if (this.questionIndex >= this.question.length) {
-            setTimeout(() => {
+            setTimeout(async () => {
                 this.currentState = "ENDED"
                 this.userWs.forEach((ws) => {
                     ws?.send(JSON.stringify({
@@ -278,7 +258,7 @@ export class Room {
                     userName: this.user[0]?.name,
                     CorrectQuestions: this.user[0]?.submission.map((value) => value.isCorrect && value).length
                 }))
-                this.endQuiz()
+               await this.endQuiz()
 
             }, 5 * 1000);
             return
@@ -437,7 +417,7 @@ export class Room {
 
     }
 
-    private endQuiz() {
+    private async endQuiz() {
 
         console.log("--------end quiz--------")
         const participant = this.user.map((value, index) => ({
@@ -448,10 +428,10 @@ export class Room {
             walletAddress: value.walletAddress,
             rank: index + 1
         }))
-        this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, participant, ((this.isCampaign || this.isPrizePool) ? "PAID" : "REGULAR"), true)
+        await this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, participant, ((this.isCampaign || this.isPrizePool) ? "PAID" : "REGULAR"), true)
     }
 
-    disconnect(ws: CustomWebsocket): { type: 'none' | "admin" | "user" } {
+     disconnect(ws: CustomWebsocket){
         if (ws.userId) {
             this.userWs.set(ws.userId, null)
             return {
@@ -460,15 +440,17 @@ export class Room {
         } else if (ws.adminId) {
             this.adminWs = null
             if (this.user.length < 2) {
+                console.log("----clear interval---------")
                 clearInterval(this.adminTimeout !== null ? this.adminTimeout : undefined)
-                this.adminTimeout = setInterval(() => {
+                this.adminTimeout = setTimeout(async () => {
                     this.userWs.forEach((userWs) => {
                         userWs?.send(JSON.stringify({
                             type: "quit",
                             message: "admin disconnected quiz is postponed"
                         }))
                     })
-
+                   await this.onEndQuiz(this.roomId, this.roomkey || 1222, this.adminId, [], ((this.isCampaign || this.isPrizePool) ? "PAID" : "REGULAR"), false)
+                    
                 }, 10 * 1000)
                 return {
                     type: "admin"
