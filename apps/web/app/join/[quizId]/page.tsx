@@ -37,18 +37,25 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
     const { setCurrentQuestion} = useCurrentQuestionStore()
     const { setLeaderBoard } = useLeaderBoardStore()
     const { setEndState } = useEndStateStore()
-    const { setWs} = useUserSocket()
+    const { ws, setWs} = useUserSocket()
     const router = useRouter()
 
 
     useEffect(() => { 
 
         async function main() { 
+            console.log("inside the useeffect")
             if (!session.data?.user.jwtToken) {
+                console.log("this is the session==",session)
                 toast.error("loading")
                 return 
             }
-            const socket = new WebSocket("wss://quizbackend.alignstacks.com")
+
+            console.log("socket")
+            if (ws !== null) {
+                return
+            }
+            const socket = new WebSocket("ws://localhost:8000")
             setWs(socket)
             socket.onopen = () => { 
                 console.log("connected")
@@ -109,7 +116,6 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
                     setEndState(endState)
                     return
                 }else if(message.type === "error") { 
-                    // toast.error(" message tyinvalidpe")
                     toast.error(message.message)
                     return
                 }else if (message.type === "forbidden"){
@@ -126,11 +132,11 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
             }
         }
         main()
-
         return () => { 
-            clearInterval(intervalRef.current ?? undefined)
+            ws?.close()
+            ws == null            
         }
-    },[])
+    },[session])
 
     return ( 
         <div className="h-screen w-screen">

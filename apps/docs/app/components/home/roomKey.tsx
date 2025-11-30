@@ -12,10 +12,6 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import {PublicKey} from "@solana/web3.js"
 
-//   name: z.string(),
-//     roomKey: z.number(),
-//     roomId: z.string(),
-//     walletAddress: z.string().optional()
 
 export function RoomKey(){ 
 
@@ -140,10 +136,7 @@ export function RoomKey(){
                 return
             }
             toast.success(response.data.message)
-        //     message: response.message,
-        // participantId: response.participantd,
-        // roomId: response.roomId,
-        // roomKey: response.roomKey
+
 
         const userMetadata = { 
             participantId: response.data.participantId, 

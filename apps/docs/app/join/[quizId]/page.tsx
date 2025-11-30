@@ -36,7 +36,7 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
     const { setCurrentQuestion } = useCurrentQuestionStore()
     const { setLeaderBoard, setField } = useLeaderBoardStore()
     const { setEndState } = useEndStateStore()
-    const {setWs} = useUserSocket()
+    const {ws,setWs} = useUserSocket()
     const router = useRouter()
 
 
@@ -47,7 +47,7 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
                 router.push("/")
                 return
             }
-            const socket = new WebSocket("wss://quizbackend.alignstacks.com")
+            const socket = new WebSocket("ws://localhost:8000")
             setWs(socket)
             const userData = JSON.parse(localStorage.getItem("user")!) as  {participantId: any;roomId: any;roomKey: any; userName: string;}
 
@@ -137,6 +137,10 @@ export default function Join({ params }: { params: Promise<{ quizId: string }> }
             }
         }
         main()
+        
+        return () => { 
+            ws?.close()
+        }
     }, [])
 
     return (
