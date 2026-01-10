@@ -132,10 +132,6 @@ export default function Join({ params }: {params: Promise<{quizId: string}>} ) {
             }
         }
         main()
-        return () => { 
-            ws?.close()
-            ws == null            
-        }
     },[session])
 
     return ( 
